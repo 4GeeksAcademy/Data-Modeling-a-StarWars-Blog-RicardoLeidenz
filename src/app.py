@@ -1,6 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 import os
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
@@ -57,7 +54,7 @@ def add_user():
         new_user = User(email=new_user["email"])
         db.session.add(new_user)
         db.session.commit()
-        return {"New User added": new_user.serialize()}, 200
+        return {"New User added": new_user.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
     
@@ -70,6 +67,41 @@ def delete_user(user_id):
         return {"User deleted": user_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
+    
+###### USER FAVORITES OPERATIONS ######
+
+@app.route('/user/favorite/planet', methods=['POST'])
+def favorite_planet():
+    data = request.get_json()
+    user_id = data["user"]
+    planet_id = data["planet"]
+    user = db.session.get(User, user_id)
+    planet = db.session.get(Planet, planet_id)
+    user.favorite_planets.append(planet)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
+
+@app.route('/user/favorite/character', methods=['POST'])
+def favorite_character():
+    data = request.get_json()
+    user_id = data["user"]
+    character_id = data["character"]
+    user = db.session.get(User, user_id)
+    character = db.session.get(Character, character_id)
+    user.favorite_characters.append(character)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
+
+@app.route('/user/favorite/vehicle', methods=['POST'])
+def favorite_vehicle():
+    data = request.get_json()
+    user_id = data["user"]
+    vehicle_id = data["vehicle"]
+    user = db.session.get(User, user_id)
+    vehicle = db.session.get(Vehicle, vehicle_id)
+    user.favorite_vehicles.append(vehicle)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
 
 
 ##########################
@@ -92,7 +124,7 @@ def add_planet():
         new_planet = Planet(email=new_planet["email"])
         db.session.add(new_planet)
         db.session.commit()
-        return {"New User added": new_planet.serialize()}, 200
+        return {"New User added": new_planet.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
     
@@ -105,17 +137,6 @@ def delete_planet(planet_id):
         return {"Planet deleted": planet_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
-
-@app.route('/user/planet/favorite', methods=['POST'])
-def favorite_planet():
-    data = request.get_json()
-    user_id = data["user"]
-    planet_id = data["planet"]
-    user = db.session.get(User, user_id)
-    planet = db.session.get(Planet, planet_id)
-    user.favorite_planets.append(planet)
-    db.session.commit()
-    return jsonify({"user": user.serialize()}), 200
 
 ##########################
 ## CHARACTER OPERATIONS ##
@@ -137,7 +158,7 @@ def add_character():
         new_character = Character(name=new_character["name"])
         db.session.add(new_character)
         db.session.commit()
-        return {"New User added": new_character.serialize()}, 200
+        return {"New User added": new_character.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
 
@@ -150,17 +171,6 @@ def delete_character(character_id):
         return {"Character deleted": character_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
-
-@app.route('/user/character/favorite', methods=['POST'])
-def favorite_character():
-    data = request.get_json()
-    user_id = data["user"]
-    character_id = data["character"]
-    user = db.session.get(User, user_id)
-    character = db.session.get(Character, character_id)
-    user.favorite_characters.append(character)
-    db.session.commit()
-    return jsonify({"user": user.serialize()}), 200
 
 ##########################
 ### VEHICLE OPERATIONS ###
@@ -182,7 +192,7 @@ def add_vehicle():
         new_vehicle = Vehicle(email=new_vehicle["name"])
         db.session.add(new_vehicle)
         db.session.commit()
-        return {"New User added": new_vehicle.serialize()}, 200
+        return {"New User added": new_vehicle.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
 
@@ -195,18 +205,6 @@ def delete_vehicle(vehicle_id):
         return {"Vehicle deleted": vehicle_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
-
-@app.route('/user/vehicle/favorite', methods=['POST'])
-def favorite_vehicle():
-    data = request.get_json()
-    user_id = data["user"]
-    vehicle_id = data["vehicle"]
-    user = db.session.get(User, user_id)
-    vehicle = db.session.get(Vehicle, vehicle_id)
-    user.favorite_vehicles.append(vehicle)
-    db.session.commit()
-
-    return jsonify({"user": user.serialize()}), 200
 
 
 # this only runs if `$ python src/app.py` is executed

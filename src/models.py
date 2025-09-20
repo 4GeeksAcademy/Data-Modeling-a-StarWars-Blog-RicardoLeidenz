@@ -37,13 +37,13 @@ class User(db.Model):
             "email": self.email,
             "favorite_planets": [item.serialize() for item in self.favorite_planets],
             "favorite_characters": [item.serialize() for item in self.favorite_characters],
-            "favorite_vehicle": [item.serialize() for item in self.favorite_vehicle]
+            "favorite_vehicles": [item.serialize() for item in self.favorite_vehicles]
         }
 
 
 class Planet(db.Model):
     __tablename__ = "planet"
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
 
     def serialize(self):
