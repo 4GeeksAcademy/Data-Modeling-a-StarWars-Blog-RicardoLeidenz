@@ -3,6 +3,7 @@ from sqlalchemy import String, Integer, Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
+#Relationship tables
 favorite_planet = Table(
     "favorite_planet",
     db.Model.metadata,
@@ -22,7 +23,7 @@ favorite_vehicle = Table(
     Column("vehicle_id", ForeignKey("vehicle.id"), primary_key=True)
 )
 
-
+#Main tables
 class User(db.Model):
     __tablename__ = "user"
     id: Mapped[int] = mapped_column(primary_key=True)

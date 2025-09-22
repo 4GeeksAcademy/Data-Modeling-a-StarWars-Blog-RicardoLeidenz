@@ -25,6 +25,8 @@ CORS(app)
 setup_admin(app)
 
 # Handle/serialize errors like a JSON object
+
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
@@ -38,6 +40,7 @@ def sitemap():
 ##   USER OPERATIONS    ##
 ##########################
 
+
 @app.route('/user', methods=['GET'])
 def handle_users():
     users = User.query.all()
@@ -45,6 +48,7 @@ def handle_users():
         "users": [item.serialize() for item in users]
     }
     return jsonify(response_body), 200
+
 
 @app.route('/user', methods=['POST'])
 def add_user():
@@ -57,7 +61,8 @@ def add_user():
         return {"New User added": new_user.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
-    
+
+
 @app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user_to_delete = db.session.get(User, user_id)
@@ -67,8 +72,9 @@ def delete_user(user_id):
         return {"User deleted": user_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
-    
+
 ###### USER FAVORITES OPERATIONS ######
+
 
 @app.route('/user/favorite/planet', methods=['POST'])
 def favorite_planet():
@@ -81,6 +87,7 @@ def favorite_planet():
     db.session.commit()
     return jsonify({"user": user.serialize()}), 200
 
+
 @app.route('/user/favorite/character', methods=['POST'])
 def favorite_character():
     data = request.get_json()
@@ -91,6 +98,7 @@ def favorite_character():
     user.favorite_characters.append(character)
     db.session.commit()
     return jsonify({"user": user.serialize()}), 200
+
 
 @app.route('/user/favorite/vehicle', methods=['POST'])
 def favorite_vehicle():
@@ -116,6 +124,7 @@ def handle_planets():
     }
     return jsonify(response_body), 200
 
+
 @app.route('/planet', methods=['POST'])
 def add_planet():
     new_planet = request.get_json()
@@ -127,7 +136,8 @@ def add_planet():
         return {"New User added": new_planet.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
-    
+
+
 @app.route('/planet/<int:planet_id>', methods=['DELETE'])
 def delete_planet(planet_id):
     planet_to_delete = db.session.get(Planet, planet_id)
@@ -142,6 +152,7 @@ def delete_planet(planet_id):
 ## CHARACTER OPERATIONS ##
 ##########################
 
+
 @app.route('/character', methods=['GET'])
 def handle_characters():
     characters = Character.query.all()
@@ -149,6 +160,7 @@ def handle_characters():
         "characters": [item.serialize() for item in characters]
     }
     return jsonify(response_body), 200
+
 
 @app.route('/character', methods=['POST'])
 def add_character():
@@ -161,6 +173,7 @@ def add_character():
         return {"New User added": new_character.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
+
 
 @app.route('/character/<int:character_id>', methods=['DELETE'])
 def delete_character(character_id):
@@ -176,6 +189,7 @@ def delete_character(character_id):
 ### VEHICLE OPERATIONS ###
 ##########################
 
+
 @app.route('/vehicle', methods=['GET'])
 def handle_vehicles():
     vehicles = Vehicle.query.all()
@@ -183,6 +197,7 @@ def handle_vehicles():
         "vehicles": [item.serialize() for item in vehicles]
     }
     return jsonify(response_body), 200
+
 
 @app.route('/vehicle', methods=['POST'])
 def add_vehicle():
@@ -195,6 +210,7 @@ def add_vehicle():
         return {"New User added": new_vehicle.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
+
 
 @app.route('/vehicle/<int:vehicle_id>', methods=['DELETE'])
 def delete_vehicle(vehicle_id):
