@@ -62,18 +62,22 @@ def add_user():
     else:
         return {"Error": "Wrong information submitted"}, 400
 
+
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def modify_user(user_id):
     data = request.get_json()
-    # Check if all information was provided
-    if ["email"] in data:
-        user_to_modify = db.session.get(User, user_id)
-        user_to_modify.email = data["email"]
-        db.session.add(user_to_modify)
-        db.session.commit()
-        return {"New User added": user_to_modify.serialize()}, 201
-    else:
+    user_to_modify = db.session.get(User, user_id)
+    # Reject if user does not exist
+    if not user_to_modify:
+        return {"Error": "User not found"}, 400
+    # Reject if email not provided
+    if "email" not in data:
         return {"Error": "Wrong information submitted"}, 400
+    # Continue if everything correct
+    user_to_modify.email = data["email"]
+    db.session.commit()
+    return {"User updated": user_to_modify.serialize()}, 200
+
 
 @app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
@@ -84,7 +88,7 @@ def delete_user(user_id):
         return {"User deleted": user_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
-    
+
 
 ###### USER FAVORITES OPERATIONS ######
 
@@ -159,6 +163,22 @@ def add_planet():
         return {"Error": "Wrong information submitted"}, 400
 
 
+@app.route('/planet/<int:planet_id>', methods=['PUT'])
+def modify_planet(planet_id):
+    data = request.get_json()
+    planet_to_modify = db.session.get(Planet, planet_id)
+    # Reject if planet does not exist
+    if not planet_to_modify:
+        return {"Error": "Planet not found"}, 400
+    # Reject if name not provided
+    if "name" not in data:
+        return {"Error": "Wrong information submitted"}, 400
+    # Continue if everything correct
+    planet_to_modify.name = data["name"]
+    db.session.commit()
+    return {"Planet updated": planet_to_modify.serialize()}, 200
+
+
 @app.route('/planet/<int:planet_id>', methods=['DELETE'])
 def delete_planet(planet_id):
     planet_to_delete = db.session.get(Planet, planet_id)
@@ -196,6 +216,22 @@ def add_character():
         return {"Error": "Wrong information submitted"}, 400
 
 
+@app.route('/character/<int:character_id>', methods=['PUT'])
+def modify_character(character_id):
+    data = request.get_json()
+    character_to_modify = db.session.get(Character, character_id)
+    # Reject if character does not exist
+    if not character_to_modify:
+        return {"Error": "Character not found"}, 400
+    # Reject if name not provided
+    if "name" not in data:
+        return {"Error": "Wrong information submitted"}, 400
+    # Continue if everything correct
+    character_to_modify.name = data["name"]
+    db.session.commit()
+    return {"Character updated": character_to_modify.serialize()}, 200
+
+
 @app.route('/character/<int:character_id>', methods=['DELETE'])
 def delete_character(character_id):
     character_to_delete = db.session.get(Character, character_id)
@@ -231,6 +267,22 @@ def add_vehicle():
         return {"New User added": new_vehicle.serialize()}, 201
     else:
         return {"Error": "Wrong information submitted"}, 400
+
+
+@app.route('/vehicle/<int:vehicle_id>', methods=['PUT'])
+def modify_vehicle(vehicle_id):
+    data = request.get_json()
+    vehicle_to_modify = db.session.get(Vehicle, vehicle_id)
+    # Reject if character does not exist
+    if not vehicle_to_modify:
+        return {"Error": "Vehicle not found"}, 400
+    # Reject if name not provided
+    if "name" not in data:
+        return {"Error": "Wrong information submitted"}, 400
+    # Continue if everything correct
+    vehicle_to_modify.name = data["name"]
+    db.session.commit()
+    return {"Vehicle updated": vehicle_to_modify.serialize()}, 200
 
 
 @app.route('/vehicle/<int:vehicle_id>', methods=['DELETE'])
