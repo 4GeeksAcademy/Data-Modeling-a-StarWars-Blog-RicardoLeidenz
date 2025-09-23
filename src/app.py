@@ -24,8 +24,8 @@ db.init_app(app)
 CORS(app)
 setup_admin(app)
 
-# Handle/serialize errors like a JSON object
 
+# Handle/serialize errors like a JSON object
 
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -36,10 +36,10 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+
 ##########################
 ##   USER OPERATIONS    ##
 ##########################
-
 
 @app.route('/user', methods=['GET'])
 def handle_users():
@@ -62,6 +62,18 @@ def add_user():
     else:
         return {"Error": "Wrong information submitted"}, 400
 
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def modify_user(user_id):
+    data = request.get_json()
+    # Check if all information was provided
+    if ["email"] in data:
+        user_to_modify = db.session.get(User, user_id)
+        user_to_modify.email = data["email"]
+        db.session.add(user_to_modify)
+        db.session.commit()
+        return {"New User added": user_to_modify.serialize()}, 201
+    else:
+        return {"Error": "Wrong information submitted"}, 400
 
 @app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
@@ -72,44 +84,53 @@ def delete_user(user_id):
         return {"User deleted": user_to_delete.serialize()}, 200
     else:
         return {"Error": "Incorrect id submitted"}, 400
+    
 
 ###### USER FAVORITES OPERATIONS ######
-
 
 @app.route('/user/favorite/planet', methods=['POST'])
 def favorite_planet():
     data = request.get_json()
-    user_id = data["user"]
-    planet_id = data["planet"]
-    user = db.session.get(User, user_id)
-    planet = db.session.get(Planet, planet_id)
-    user.favorite_planets.append(planet)
-    db.session.commit()
-    return jsonify({"user": user.serialize()}), 200
+    if ["user", "planet"] in data:
+        user_id = data["user"]
+        planet_id = data["planet"]
+        user = db.session.get(User, user_id)
+        planet = db.session.get(Planet, planet_id)
+        user.favorite_planets.append(planet)
+        db.session.commit()
+        return jsonify({"user": user.serialize()}), 200
+    else:
+        return jsonify("Wrong informayion entered"), 400
 
 
 @app.route('/user/favorite/character', methods=['POST'])
 def favorite_character():
     data = request.get_json()
-    user_id = data["user"]
-    character_id = data["character"]
-    user = db.session.get(User, user_id)
-    character = db.session.get(Character, character_id)
-    user.favorite_characters.append(character)
-    db.session.commit()
-    return jsonify({"user": user.serialize()}), 200
+    if ["user", "character"] in data:
+        user_id = data["user"]
+        character_id = data["character"]
+        user = db.session.get(User, user_id)
+        character = db.session.get(Character, character_id)
+        user.favorite_characters.append(character)
+        db.session.commit()
+        return jsonify({"user": user.serialize()}), 200
+    else:
+        return jsonify("Wrong informayion entered"), 400
 
 
 @app.route('/user/favorite/vehicle', methods=['POST'])
 def favorite_vehicle():
     data = request.get_json()
-    user_id = data["user"]
-    vehicle_id = data["vehicle"]
-    user = db.session.get(User, user_id)
-    vehicle = db.session.get(Vehicle, vehicle_id)
-    user.favorite_vehicles.append(vehicle)
-    db.session.commit()
-    return jsonify({"user": user.serialize()}), 200
+    if ["user", "vehicle"] in data:
+        user_id = data["user"]
+        vehicle_id = data["vehicle"]
+        user = db.session.get(User, user_id)
+        vehicle = db.session.get(Vehicle, vehicle_id)
+        user.favorite_vehicles.append(vehicle)
+        db.session.commit()
+        return jsonify({"user": user.serialize()}), 200
+    else:
+        return jsonify("Wrong informayion entered"), 400
 
 
 ##########################
@@ -148,10 +169,10 @@ def delete_planet(planet_id):
     else:
         return {"Error": "Incorrect id submitted"}, 400
 
+
 ##########################
 ## CHARACTER OPERATIONS ##
 ##########################
-
 
 @app.route('/character', methods=['GET'])
 def handle_characters():
@@ -185,10 +206,10 @@ def delete_character(character_id):
     else:
         return {"Error": "Incorrect id submitted"}, 400
 
+
 ##########################
 ### VEHICLE OPERATIONS ###
 ##########################
-
 
 @app.route('/vehicle', methods=['GET'])
 def handle_vehicles():
