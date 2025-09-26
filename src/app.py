@@ -104,7 +104,7 @@ def favorite_planet():
         db.session.commit()
         return jsonify({"user": user.serialize()}), 200
     else:
-        return jsonify("Wrong informayion entered"), 400
+        return jsonify("Wrong information entered"), 400
 
 
 @app.route('/user/favorite/character', methods=['POST'])
@@ -119,7 +119,7 @@ def favorite_character():
         db.session.commit()
         return jsonify({"user": user.serialize()}), 200
     else:
-        return jsonify("Wrong informayion entered"), 400
+        return jsonify("Wrong information entered"), 400
 
 
 @app.route('/user/favorite/vehicle', methods=['POST'])
@@ -134,7 +134,7 @@ def favorite_vehicle():
         db.session.commit()
         return jsonify({"user": user.serialize()}), 200
     else:
-        return jsonify("Wrong informayion entered"), 400
+        return jsonify("Wrong information entered"), 400
 
 
 ##########################
@@ -183,6 +183,9 @@ def modify_planet(planet_id):
 def delete_planet(planet_id):
     planet_to_delete = db.session.get(Planet, planet_id)
     if planet_to_delete:
+        # Clear all relationships referencing it
+        planet_to_delete.favorited_by.clear()
+        # Delete planet
         db.session.delete(planet_to_delete)
         db.session.commit()
         return {"Planet deleted": planet_to_delete.serialize()}, 200
@@ -236,6 +239,9 @@ def modify_character(character_id):
 def delete_character(character_id):
     character_to_delete = db.session.get(Character, character_id)
     if character_to_delete:
+        # Clear all relationships referencing it
+        character_to_delete.favorited_by.clear()
+        # Delete Character
         db.session.delete(character_to_delete)
         db.session.commit()
         return {"Character deleted": character_to_delete.serialize()}, 200
@@ -289,6 +295,9 @@ def modify_vehicle(vehicle_id):
 def delete_vehicle(vehicle_id):
     vehicle_to_delete = db.session.get(Vehicle, vehicle_id)
     if vehicle_to_delete:
+        # Clear all relationships referencing it
+        vehicle_to_delete.favorited_by.clear()
+        # Delete Vehicle
         db.session.delete(vehicle_to_delete)
         db.session.commit()
         return {"Vehicle deleted": vehicle_to_delete.serialize()}, 200
