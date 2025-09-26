@@ -95,46 +95,67 @@ def delete_user(user_id):
 @app.route('/user/favorite/planet', methods=['POST'])
 def favorite_planet():
     data = request.get_json()
-    if ["user", "planet"] in data:
-        user_id = data["user"]
-        planet_id = data["planet"]
-        user = db.session.get(User, user_id)
-        planet = db.session.get(Planet, planet_id)
-        user.favorite_planets.append(planet)
-        db.session.commit()
-        return jsonify({"user": user.serialize()}), 200
-    else:
+    # We check the info entered is correct exists
+    if ("user" and "planet") not in data:
         return jsonify("Wrong information entered"), 400
+    # If so we save it
+    user_id = data["user"]
+    planet_id = data["planet"]
+    user = db.session.get(User, user_id)
+    # We check the user exists
+    if not user:
+        return jsonify("User not found"), 400
+    planet = db.session.get(Planet, planet_id)
+    # We check the planet exists
+    if not planet:
+        return jsonify("Planet not found"), 400
+    user.favorite_planets.append(planet)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
 
 
 @app.route('/user/favorite/character', methods=['POST'])
 def favorite_character():
     data = request.get_json()
-    if ["user", "character"] in data:
-        user_id = data["user"]
-        character_id = data["character"]
-        user = db.session.get(User, user_id)
-        character = db.session.get(Character, character_id)
-        user.favorite_characters.append(character)
-        db.session.commit()
-        return jsonify({"user": user.serialize()}), 200
-    else:
+    # We check the info entered is correct exists
+    if ("user" and "character") not in data:
         return jsonify("Wrong information entered"), 400
+    # If so we save it
+    user_id = data["user"]
+    character_id = data["character"]
+    user = db.session.get(User, user_id)
+    # We check the user exists
+    if not user:
+        return jsonify("User not found"), 400
+    character = db.session.get(Character, character_id)
+    # We check the character exists
+    if not character:
+        return jsonify("Character not found"), 400
+    user.favorite_characters.append(character)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
 
 
 @app.route('/user/favorite/vehicle', methods=['POST'])
 def favorite_vehicle():
     data = request.get_json()
-    if ["user", "vehicle"] in data:
-        user_id = data["user"]
-        vehicle_id = data["vehicle"]
-        user = db.session.get(User, user_id)
-        vehicle = db.session.get(Vehicle, vehicle_id)
-        user.favorite_vehicles.append(vehicle)
-        db.session.commit()
-        return jsonify({"user": user.serialize()}), 200
-    else:
+    # We check the info entered is correct exists
+    if ("user" and "vehicle") not in data:
         return jsonify("Wrong information entered"), 400
+    # If so we save it
+    user_id = data["user"]
+    vehicle_id = data["vehicle"]
+    user = db.session.get(User, user_id)
+    # We check the user exists
+    if not user:
+        return jsonify("User not found"), 400
+    vehicle = db.session.get(Vehicle, vehicle_id)
+    # We check the vehicle exists
+    if not vehicle:
+        return jsonify("Vehicle not found"), 400
+    user.favorite_vehicles.append(vehicle)
+    db.session.commit()
+    return jsonify({"user": user.serialize()}), 200
 
 
 ##########################
